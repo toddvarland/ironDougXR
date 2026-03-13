@@ -1,0 +1,86 @@
+name: ironDougXR
+
+options:
+  bundleIdPrefix: com.irondougxr
+  deploymentTarget:
+    iOS: "18.0"
+  createIntermediateGroups: true
+  generateEmptyDirectories: true
+
+settings:
+  base:
+    SWIFT_VERSION: 6.0
+    IPHONEOS_DEPLOYMENT_TARGET: 16.0
+
+targets:
+  ironDougXR:
+    type: application
+    platform: iOS
+    deploymentTarget: "18.0"
+    sources:
+      - ironDougXR
+    info:
+      path: ironDougXR/Info.plist
+      properties:
+        NSCameraUsageDescription: "This app uses the camera to display and anchor AR markers in your environment."
+        UILaunchScreen: {}
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+          UISceneConfigurations: {}
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.irondougxr.app
+        TARGETED_DEVICE_FAMILY: "1"
+        IPHONEOS_DEPLOYMENT_TARGET: 18.0
+        SWIFT_STRICT_CONCURRENCY: complete
+    dependencies:
+      - sdk: ARKit.framework
+      - sdk: RealityKit.framework
+
+  ironDougXRTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "18.0"
+    sources:
+      - ironDougXRTests
+    dependencies:
+      - target: ironDougXR
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.irondougxr.tests
+        SWIFT_STRICT_CONCURRENCY: complete
+
+  ironDougXRUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    deploymentTarget: "18.0"
+    sources:
+      - ironDougXRUITests
+    dependencies:
+      - target: ironDougXR
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.irondougxr.uitests
+
+schemes:
+  ironDougXR:
+    build:
+      targets:
+        ironDougXR: all
+        ironDougXRTests: [test]
+        ironDougXRUITests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - name: ironDougXRTests
+          parallelizable: true
+        - name: ironDougXRUITests
+          parallelizable: false
+    profile:
+      config: Release
+    analyze:
+      config: Debug
+    archive:
+      config: Release

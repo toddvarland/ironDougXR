@@ -1,0 +1,39 @@
+# Xcode
+*.xcuserstate
+xcuserdata/
+*.xcscmblueprint
+*.moved-aside
+DerivedData/
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+*.o
+*.d
+*.dia
+
+# Build
+build/
+
+# CocoaPods
+Pods/
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# Playgrounds
+timeline.xctimeline
+playground.xcworkspace
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+
+# Test results
+/tmp/xctest_*.txt

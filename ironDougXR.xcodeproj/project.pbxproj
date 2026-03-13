@@ -1,0 +1,576 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		004B686FAD605829DD2806EA /* ARViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 410671AB8C72B72AE9637C12 /* ARViewContainer.swift */; };
+		20A702567772639A21E36DB2 /* AnchorRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 782250D27F8F28CF67A527A5 /* AnchorRecord.swift */; };
+		67721E7312490A555DEEC5DD /* MarkerEntityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 713666A28BDBB999D2FE3CDB /* MarkerEntityTests.swift */; };
+		6B77D196D8C0D99D24C57A25 /* RealityKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14ABDDE5AD6196EEF3551899 /* RealityKit.framework */; };
+		6E7B2E077E7BB44D09E07AC4 /* ARKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF4B4216B09C472E6600E5A9 /* ARKit.framework */; };
+		7C795017E97CB9549E9F1F0C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F28772997FCF40EBC5AF8B2C /* ContentView.swift */; };
+		86B48B0DEED5151BF5AA2103 /* PersistenceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B777EC6C0820C09FBB595140 /* PersistenceManager.swift */; };
+		8733906D5FFE8DA30C4D00A3 /* ironDougXRApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAB4A445B7944116B6FD9ED1 /* ironDougXRApp.swift */; };
+		9CC16ACDA16E973752693123 /* MarkerEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C3E5F9513BDD0182EB22C7A /* MarkerEntity.swift */; };
+		BDC0DB798232476741034FCE /* AnchorRecordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F63E0D02298D19FFDBA88C5 /* AnchorRecordTests.swift */; };
+		C846C20435D19DC8D12BA9CB /* MarkerListUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F64A86A4DB6138DDC18CC998 /* MarkerListUITests.swift */; };
+		E31B537135C62D3E1FA914B2 /* PersistenceManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4999CFED1A9059DB57BCBC54 /* PersistenceManagerTests.swift */; };
+		E6D07A2106E148377DA2733B /* ARViewModelLogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49AA5384DBF9C2C3204C1003 /* ARViewModelLogicTests.swift */; };
+		EB0E269AB46D2D691AA4F76B /* ARViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FCCED9FB92BDCEE2B4996FC /* ARViewModel.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		0E29D00F586FABB4C6B9B7B6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1FF7C628AFBE0E7D6B0D7591 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0CC20D0EB9A04CDC3F6E8DCC;
+			remoteInfo = ironDougXR;
+		};
+		9DC5CF4DFBC879AFE9B8A1AC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1FF7C628AFBE0E7D6B0D7591 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0CC20D0EB9A04CDC3F6E8DCC;
+			remoteInfo = ironDougXR;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		099D92B4B2D2EDCD4A8C2195 /* ironDougXR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ironDougXR.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0C3E5F9513BDD0182EB22C7A /* MarkerEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkerEntity.swift; sourceTree = "<group>"; };
+		14ABDDE5AD6196EEF3551899 /* RealityKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RealityKit.framework; path = System/Library/Frameworks/RealityKit.framework; sourceTree = SDKROOT; };
+		219ED27BA53CA7BBBFA1032D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		410671AB8C72B72AE9637C12 /* ARViewContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARViewContainer.swift; sourceTree = "<group>"; };
+		4999CFED1A9059DB57BCBC54 /* PersistenceManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceManagerTests.swift; sourceTree = "<group>"; };
+		49AA5384DBF9C2C3204C1003 /* ARViewModelLogicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARViewModelLogicTests.swift; sourceTree = "<group>"; };
+		57E3A948C6C6B3417F71F890 /* ironDougXRUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ironDougXRUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		5F63E0D02298D19FFDBA88C5 /* AnchorRecordTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnchorRecordTests.swift; sourceTree = "<group>"; };
+		713666A28BDBB999D2FE3CDB /* MarkerEntityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkerEntityTests.swift; sourceTree = "<group>"; };
+		782250D27F8F28CF67A527A5 /* AnchorRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnchorRecord.swift; sourceTree = "<group>"; };
+		9FCCED9FB92BDCEE2B4996FC /* ARViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARViewModel.swift; sourceTree = "<group>"; };
+		A88E65BE21FBC08198D098CE /* ironDougXRTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ironDougXRTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B777EC6C0820C09FBB595140 /* PersistenceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceManager.swift; sourceTree = "<group>"; };
+		EAB4A445B7944116B6FD9ED1 /* ironDougXRApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ironDougXRApp.swift; sourceTree = "<group>"; };
+		EF4B4216B09C472E6600E5A9 /* ARKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ARKit.framework; path = System/Library/Frameworks/ARKit.framework; sourceTree = SDKROOT; };
+		F28772997FCF40EBC5AF8B2C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		F64A86A4DB6138DDC18CC998 /* MarkerListUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkerListUITests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		83905C004BC2A8A08377CF36 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6E7B2E077E7BB44D09E07AC4 /* ARKit.framework in Frameworks */,
+				6B77D196D8C0D99D24C57A25 /* RealityKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		10F0AC96E0D2DB484DFF700D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				099D92B4B2D2EDCD4A8C2195 /* ironDougXR.app */,
+				A88E65BE21FBC08198D098CE /* ironDougXRTests.xctest */,
+				57E3A948C6C6B3417F71F890 /* ironDougXRUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2FCDC891F9E6AE2EF052599C /* App */ = {
+			isa = PBXGroup;
+			children = (
+				F28772997FCF40EBC5AF8B2C /* ContentView.swift */,
+				EAB4A445B7944116B6FD9ED1 /* ironDougXRApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		3E94E4F83488E5137F322ACE /* ironDougXR */ = {
+			isa = PBXGroup;
+			children = (
+				219ED27BA53CA7BBBFA1032D /* Info.plist */,
+				2FCDC891F9E6AE2EF052599C /* App */,
+				D0BFBCEDD7FB8562405D0F2C /* AR */,
+				E0A2ABA3197D49BC29900890 /* Persistence */,
+			);
+			path = ironDougXR;
+			sourceTree = "<group>";
+		};
+		479B051049EC2DD1BD905B35 /* ironDougXRTests */ = {
+			isa = PBXGroup;
+			children = (
+				5F63E0D02298D19FFDBA88C5 /* AnchorRecordTests.swift */,
+				49AA5384DBF9C2C3204C1003 /* ARViewModelLogicTests.swift */,
+				713666A28BDBB999D2FE3CDB /* MarkerEntityTests.swift */,
+				4999CFED1A9059DB57BCBC54 /* PersistenceManagerTests.swift */,
+			);
+			path = ironDougXRTests;
+			sourceTree = "<group>";
+		};
+		7EF424A467DE6D81F51B5CA1 /* ironDougXRUITests */ = {
+			isa = PBXGroup;
+			children = (
+				F64A86A4DB6138DDC18CC998 /* MarkerListUITests.swift */,
+			);
+			path = ironDougXRUITests;
+			sourceTree = "<group>";
+		};
+		886E2D24E8C6A05411DDF3E5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				EF4B4216B09C472E6600E5A9 /* ARKit.framework */,
+				14ABDDE5AD6196EEF3551899 /* RealityKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D0BFBCEDD7FB8562405D0F2C /* AR */ = {
+			isa = PBXGroup;
+			children = (
+				410671AB8C72B72AE9637C12 /* ARViewContainer.swift */,
+				9FCCED9FB92BDCEE2B4996FC /* ARViewModel.swift */,
+				0C3E5F9513BDD0182EB22C7A /* MarkerEntity.swift */,
+			);
+			path = AR;
+			sourceTree = "<group>";
+		};
+		E0A2ABA3197D49BC29900890 /* Persistence */ = {
+			isa = PBXGroup;
+			children = (
+				782250D27F8F28CF67A527A5 /* AnchorRecord.swift */,
+				B777EC6C0820C09FBB595140 /* PersistenceManager.swift */,
+			);
+			path = Persistence;
+			sourceTree = "<group>";
+		};
+		F9B7741879C2C6D421173238 = {
+			isa = PBXGroup;
+			children = (
+				3E94E4F83488E5137F322ACE /* ironDougXR */,
+				479B051049EC2DD1BD905B35 /* ironDougXRTests */,
+				7EF424A467DE6D81F51B5CA1 /* ironDougXRUITests */,
+				886E2D24E8C6A05411DDF3E5 /* Frameworks */,
+				10F0AC96E0D2DB484DFF700D /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		0CC20D0EB9A04CDC3F6E8DCC /* ironDougXR */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2037EB855BF97580B217F8C3 /* Build configuration list for PBXNativeTarget "ironDougXR" */;
+			buildPhases = (
+				4A99FBBF6D884301DF332006 /* Sources */,
+				83905C004BC2A8A08377CF36 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ironDougXR;
+			packageProductDependencies = (
+			);
+			productName = ironDougXR;
+			productReference = 099D92B4B2D2EDCD4A8C2195 /* ironDougXR.app */;
+			productType = "com.apple.product-type.application";
+		};
+		A1E830AE6C217CFEF94BBE4C /* ironDougXRTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CC33D118C7BF8E33529C17FB /* Build configuration list for PBXNativeTarget "ironDougXRTests" */;
+			buildPhases = (
+				C1E647A08A8ADC84B87B75DD /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A60D852DE80B9DA0CAE96397 /* PBXTargetDependency */,
+			);
+			name = ironDougXRTests;
+			packageProductDependencies = (
+			);
+			productName = ironDougXRTests;
+			productReference = A88E65BE21FBC08198D098CE /* ironDougXRTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		F529111835978C8ED0BAB8B1 /* ironDougXRUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 65581BD24D38E87E3E4EC8E7 /* Build configuration list for PBXNativeTarget "ironDougXRUITests" */;
+			buildPhases = (
+				46FBAECB3596C00482F7E7D7 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6FD35339EE6B74E9D6D16724 /* PBXTargetDependency */,
+			);
+			name = ironDougXRUITests;
+			packageProductDependencies = (
+			);
+			productName = ironDougXRUITests;
+			productReference = 57E3A948C6C6B3417F71F890 /* ironDougXRUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		1FF7C628AFBE0E7D6B0D7591 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					F529111835978C8ED0BAB8B1 = {
+						TestTargetID = 0CC20D0EB9A04CDC3F6E8DCC;
+					};
+				};
+			};
+			buildConfigurationList = 46F4C03517DDAE0346E511F9 /* Build configuration list for PBXProject "ironDougXR" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = F9B7741879C2C6D421173238;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 10F0AC96E0D2DB484DFF700D /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				0CC20D0EB9A04CDC3F6E8DCC /* ironDougXR */,
+				A1E830AE6C217CFEF94BBE4C /* ironDougXRTests */,
+				F529111835978C8ED0BAB8B1 /* ironDougXRUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		46FBAECB3596C00482F7E7D7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C846C20435D19DC8D12BA9CB /* MarkerListUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4A99FBBF6D884301DF332006 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				004B686FAD605829DD2806EA /* ARViewContainer.swift in Sources */,
+				EB0E269AB46D2D691AA4F76B /* ARViewModel.swift in Sources */,
+				20A702567772639A21E36DB2 /* AnchorRecord.swift in Sources */,
+				7C795017E97CB9549E9F1F0C /* ContentView.swift in Sources */,
+				9CC16ACDA16E973752693123 /* MarkerEntity.swift in Sources */,
+				86B48B0DEED5151BF5AA2103 /* PersistenceManager.swift in Sources */,
+				8733906D5FFE8DA30C4D00A3 /* ironDougXRApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C1E647A08A8ADC84B87B75DD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E6D07A2106E148377DA2733B /* ARViewModelLogicTests.swift in Sources */,
+				BDC0DB798232476741034FCE /* AnchorRecordTests.swift in Sources */,
+				67721E7312490A555DEEC5DD /* MarkerEntityTests.swift in Sources */,
+				E31B537135C62D3E1FA914B2 /* PersistenceManagerTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		6FD35339EE6B74E9D6D16724 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0CC20D0EB9A04CDC3F6E8DCC /* ironDougXR */;
+			targetProxy = 0E29D00F586FABB4C6B9B7B6 /* PBXContainerItemProxy */;
+		};
+		A60D852DE80B9DA0CAE96397 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0CC20D0EB9A04CDC3F6E8DCC /* ironDougXR */;
+			targetProxy = 9DC5CF4DFBC879AFE9B8A1AC /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		36726842C1EF634ABD922522 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = 5Q2YW9392K;
+				INFOPLIST_FILE = ironDougXR/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.irondougxr.app;
+				SDKROOT = iphoneos;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		3970275D1E63528BC3B493AA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.irondougxr.tests;
+				SDKROOT = iphoneos;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ironDougXR.app/ironDougXR";
+			};
+			name = Debug;
+		};
+		5A5CCD16AC3020767B8AD211 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		7BB4AE98E1CEB66AB39B0C4A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.irondougxr.tests;
+				SDKROOT = iphoneos;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ironDougXR.app/ironDougXR";
+			};
+			name = Release;
+		};
+		AFE29B0A789731F41AC357C1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+		CF67C54D4A3F885040D6DA97 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.irondougxr.uitests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = ironDougXR;
+			};
+			name = Debug;
+		};
+		E528D3AB3A2810013A9B1848 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = 5Q2YW9392K;
+				INFOPLIST_FILE = ironDougXR/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.irondougxr.app;
+				SDKROOT = iphoneos;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		EDB263F9A86C7A685A65EE32 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.irondougxr.uitests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = ironDougXR;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2037EB855BF97580B217F8C3 /* Build configuration list for PBXNativeTarget "ironDougXR" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E528D3AB3A2810013A9B1848 /* Debug */,
+				36726842C1EF634ABD922522 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		46F4C03517DDAE0346E511F9 /* Build configuration list for PBXProject "ironDougXR" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5A5CCD16AC3020767B8AD211 /* Debug */,
+				AFE29B0A789731F41AC357C1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		65581BD24D38E87E3E4EC8E7 /* Build configuration list for PBXNativeTarget "ironDougXRUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CF67C54D4A3F885040D6DA97 /* Debug */,
+				EDB263F9A86C7A685A65EE32 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		CC33D118C7BF8E33529C17FB /* Build configuration list for PBXNativeTarget "ironDougXRTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3970275D1E63528BC3B493AA /* Debug */,
+				7BB4AE98E1CEB66AB39B0C4A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 1FF7C628AFBE0E7D6B0D7591 /* Project object */;
+}
