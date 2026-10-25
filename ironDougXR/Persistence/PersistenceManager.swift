@@ -17,16 +17,12 @@ enum PersistenceManager {
 
     // MARK: - World Map
 
-    static func save(worldMap: ARWorldMap) {
-        do {
-            let data = try NSKeyedArchiver.archivedData(
-                withRootObject: worldMap,
-                requiringSecureCoding: true
-            )
-            try data.write(to: worldMapURL, options: .atomic)
-        } catch {
-            print("PersistenceManager: failed to save world map — \(error)")
-        }
+    static func save(worldMap: ARWorldMap) throws {
+        let data = try NSKeyedArchiver.archivedData(
+            withRootObject: worldMap,
+            requiringSecureCoding: true
+        )
+        try data.write(to: worldMapURL, options: .atomic)
     }
 
     static func loadWorldMap() -> ARWorldMap? {

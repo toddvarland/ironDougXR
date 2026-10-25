@@ -135,6 +135,67 @@ final class ARViewModelLogicTests: XCTestCase {
         XCTAssertEqual(ARViewModel.nextDefaultLabel(after: records), "Mark 3")
     }
 
+    // MARK: - New markers persist only on Save
+
+    func test_addUnsavedRecord_isNotWrittenToDisk() {
+        let vm = ARViewModel()
+        vm.addUnsavedRecord(id: UUID())
+        XCTAssertEqual(vm.savedAnchors.count, 1)
+        XCTAssertTrue(vm.hasUnsavedChanges)
+        XCTAssertTrue(PersistenceManager.loadAnchorRecords().isEmpty)
+    }
+
+    func test_renameOfSavedMarker_doesNotWriteUnsavedOnes() {
+        let vm = ARViewModel()
+        let savedID = UUID()
+        vm.savedAnchors = [AnchorRecord(id: savedID, label: "Mark 1", timestamp: Date())]
+        vm.addUnsavedRecord(id: UUID())
+        vm.renameAnchor(id: savedID, label: "Desk")
+        let onDisk = PersistenceManager.loadAnchorRecords()
+        XCTAssertEqual(onDisk.map(\.id), [savedID])
+        XCTAssertEqual(onDisk.first?.label, "Desk")
+    }
+
+    func test_commitUnsavedRecords_writesOnlyAnchorsInMap() {
+        let vm = ARViewModel()
+        let inMap = UUID()
+        let placedDuringSave = UUID()
+        vm.addUnsavedRecord(id: inMap)
+        vm.addUnsavedRecord(id: placedDuringSave)
+        vm.commitUnsavedRecords(inMap: [inMap])
+        XCTAssertEqual(PersistenceManager.loadAnchorRecords().map(\.id), [inMap])
+        XCTAssertEqual(vm.unsavedIDs, [placedDuringSave])
+        XCTAssertEqual(vm.savedAnchors.count, 2)
+    }
+
+    func test_deleteUnsavedMarker_clearsUnsavedFlag() {
+        let vm = ARViewModel()
+        let id = UUID()
+        vm.addUnsavedRecord(id: id)
+        vm.deleteAnchor(id: id)
+        XCTAssertFalse(vm.hasUnsavedChanges)
+    }
+
+    func test_records_dropsThoseNotInWorldMap() {
+        let kept = AnchorRecord(id: UUID(), label: "Kept", timestamp: Date())
+        let orphan = AnchorRecord(id: UUID(), label: "Orphan", timestamp: Date())
+        XCTAssertEqual(
+            ARViewModel.records([kept, orphan], restorableFrom: [kept.id]).map(\.id),
+            [kept.id]
+        )
+        XCTAssertTrue(ARViewModel.records([kept], restorableFrom: []).isEmpty)
+    }
+
+    func test_startSession_withoutWorldMap_dropsOrphanedRecords() {
+        PersistenceManager.save(anchorRecords: [
+            AnchorRecord(id: UUID(), label: "Never saved", timestamp: Date())
+        ])
+        let vm = ARViewModel()
+        vm.startSession()
+        XCTAssertTrue(vm.savedAnchors.isEmpty)
+        XCTAssertTrue(PersistenceManager.loadAnchorRecords().isEmpty)
+    }
+
     // MARK: - Count stays in sync with the list
 
     func test_anchorCount_tracksSavedAnchors() {

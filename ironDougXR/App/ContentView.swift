@@ -79,7 +79,17 @@ struct ContentView: View {
             }
             .buttonStyle(.borderedProminent)
             .disabled(!viewModel.isReadyToSave)
+            .overlay(alignment: .topTrailing) {
+                if viewModel.hasUnsavedChanges {
+                    Circle()
+                        .fill(.red)
+                        .frame(width: 10, height: 10)
+                        .offset(x: 3, y: -3)
+                        .accessibilityHidden(true)
+                }
+            }
             .accessibilityIdentifier("saveButton")
+            .accessibilityValue(viewModel.hasUnsavedChanges ? "Unsaved markers" : "")
 
             Button {
                 showMarkerList = true
