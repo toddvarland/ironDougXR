@@ -4,6 +4,11 @@ import UIKit
 @MainActor
 enum MarkerEntity {
 
+    /// 8 ft, so markers stay visible across open ground
+    static let poleHeight: Float = 2.4384
+    static let orbHeight: Float = poleHeight + 0.02
+    static let labelHeight: Float = poleHeight + 0.10
+
     static func make(label: String) -> Entity {
         let root = Entity()
         root.addChild(makeRing())
@@ -26,10 +31,10 @@ enum MarkerEntity {
     }
 
     private static func makePole() -> ModelEntity {
-        let mesh = MeshResource.generateCylinder(height: 0.50, radius: 0.007)
+        let mesh = MeshResource.generateCylinder(height: poleHeight, radius: 0.007)
         let mat = UnlitMaterial(color: .white)
         let entity = ModelEntity(mesh: mesh, materials: [mat])
-        entity.position = [0, 0.25, 0]
+        entity.position = [0, poleHeight / 2, 0]
         return entity
     }
 
@@ -37,7 +42,7 @@ enum MarkerEntity {
         let mesh = MeshResource.generateSphere(radius: 0.045)
         let mat = UnlitMaterial(color: UIColor.systemOrange)
         let entity = ModelEntity(mesh: mesh, materials: [mat])
-        entity.position = [0, 0.52, 0]
+        entity.position = [0, orbHeight, 0]
         return entity
     }
 
@@ -54,7 +59,7 @@ enum MarkerEntity {
         let mat = UnlitMaterial(color: .white)
         let entity = ModelEntity(mesh: mesh, materials: [mat])
         let bounds = entity.visualBounds(relativeTo: nil)
-        entity.position = SIMD3<Float>(-bounds.extents.x / 2, 0.60, 0)
+        entity.position = SIMD3<Float>(-bounds.extents.x / 2, labelHeight, 0)
         entity.components.set(BillboardComponent())
         return entity
     }

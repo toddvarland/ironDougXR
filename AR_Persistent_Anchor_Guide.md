@@ -1036,7 +1036,7 @@ All planning questions have been answered. The following decisions are reflected
 | # | Question | Decision |
 |---|---|---|
 | 7 | Customizable marker appearance? | **No** — one unified style for all markers. |
-| 8 | Is the 0.5 m pole the right scale? | **Yes** — confirmed. |
+| 8 | Is the 0.5 m pole the right scale? | Originally yes. **Changed 2026-10-24 to 8 ft (2.44 m)** for visibility across open ground (pasture testing). `MarkerEntity.poleHeight`; the orb and label sit on top. |
 | 9 | Should markers be occluded by real geometry? | **No** — `UnlitMaterial` with no occlusion; markers are always visible regardless of what is in front of them. |
 
 ### Persistence & Reliability

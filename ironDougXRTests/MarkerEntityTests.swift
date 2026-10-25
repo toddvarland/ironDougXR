@@ -17,6 +17,22 @@ final class MarkerEntityTests: XCTestCase {
         XCTAssertGreaterThan(maxY, 0.5, "Tallest child should be positioned above 0.5 m")
     }
 
+    func test_poleIsEightFeetTall() throws {
+        let marker = MarkerEntity.make(label: "Test")
+        let pole = try XCTUnwrap(marker.children[1] as? ModelEntity)
+        let height = pole.visualBounds(relativeTo: marker).extents.y
+        XCTAssertEqual(height, 2.4384, accuracy: 0.01)
+        XCTAssertEqual(pole.position.y, 2.4384 / 2, accuracy: 0.001, "Pole should stand on the ground")
+    }
+
+    func test_orbAndLabelSitAbovePole() {
+        let marker = MarkerEntity.make(label: "Test")
+        let ys = marker.children.map { $0.position.y }
+        // children: ring, pole, orb, label
+        XCTAssertGreaterThan(ys[2], MarkerEntity.poleHeight)
+        XCTAssertGreaterThan(ys[3], ys[2])
+    }
+
     func test_markerEntity_ringIsNearGround() {
         let marker = MarkerEntity.make(label: "Test")
         let minY = marker.children.map { $0.position.y }.min() ?? 1
