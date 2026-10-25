@@ -78,38 +78,37 @@ final class ARViewModelLogicTests: XCTestCase {
         XCTAssertTrue(PersistenceManager.loadAnchorRecords().isEmpty)
     }
 
-    func test_startSession_triggersRecalibrationPrompt_whenWorldMapIsOlderThan30Days() {
-        let vm = ARViewModel()
-        let oldDate = Date(timeIntervalSinceNow: -(31 * 24 * 60 * 60))
-        PersistenceManager.save(anchorRecords: [
-            AnchorRecord(id: UUID(), label: "Old Mark", timestamp: oldDate)
-        ])
-        // No world map saved, but we can verify the recalibration logic directly:
-        vm.savedAnchors = [AnchorRecord(id: UUID(), label: "Old", timestamp: oldDate)]
-        let worldMapPresent = PersistenceManager.loadWorldMap() != nil
-        if worldMapPresent,
-           let oldest = vm.savedAnchors.map({ $0.timestamp }).min(),
-           Date().timeIntervalSince(oldest) > 30 * 24 * 60 * 60 {
-            vm.showRecalibrationPrompt = true
-        }
-        // No world map means prompt isn't triggered by startSession, test the condition directly
-        XCTAssertFalse(worldMapPresent)
-        // Verify the condition logic works when world map exists
-        vm.showRecalibrationPrompt = true
-        XCTAssertTrue(vm.showRecalibrationPrompt)
+    // MARK: - World map expiry
+
+    func test_needsRecalibration_falseWithoutWorldMap() {
+        XCTAssertFalse(ARViewModel.needsRecalibration(mapSavedAt: nil))
     }
 
-    func test_startSession_loadsAnchorRecords() {
-        let records = [
-            AnchorRecord(id: UUID(), label: "A", timestamp: Date()),
-            AnchorRecord(id: UUID(), label: "B", timestamp: Date())
-        ]
-        PersistenceManager.save(anchorRecords: records)
+    func test_needsRecalibration_atBoundaryDays() {
+        let now = Date(timeIntervalSince1970: 1_800_000_000)
+        let day: TimeInterval = 24 * 60 * 60
+        XCTAssertFalse(ARViewModel.needsRecalibration(mapSavedAt: now - 29 * day, now: now))
+        XCTAssertFalse(ARViewModel.needsRecalibration(mapSavedAt: now - 30 * day, now: now))
+        XCTAssertTrue(ARViewModel.needsRecalibration(mapSavedAt: now - 31 * day, now: now))
+    }
+
+    func test_needsRecalibration_ignoresMarkerAge() {
+        // A fresh Save resets the clock even when markers were placed long ago
+        let now = Date()
+        XCTAssertFalse(ARViewModel.needsRecalibration(mapSavedAt: now - 60, now: now))
+    }
+
+    func test_worldMapSavedAt_isNilWhenNoneSaved() {
+        XCTAssertNil(PersistenceManager.worldMapSavedAt())
+    }
+
+    func test_startSession_withoutWorldMap_doesNotPromptRecalibration() {
+        PersistenceManager.save(anchorRecords: [
+            AnchorRecord(id: UUID(), label: "Old", timestamp: Date(timeIntervalSinceNow: -(60 * 24 * 60 * 60)))
+        ])
         let vm = ARViewModel()
-        // arView is nil so session.run won't be called — just test record loading
-        vm.savedAnchors = PersistenceManager.loadAnchorRecords()
-        XCTAssertEqual(vm.savedAnchors.count, 2)
-        XCTAssertEqual(vm.anchorCount, 2)
+        vm.startSession()
+        XCTAssertFalse(vm.showRecalibrationPrompt)
     }
 
     // MARK: - Default labels
