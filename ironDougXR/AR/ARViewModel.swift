@@ -12,6 +12,7 @@ final class ARViewModel: NSObject, ObservableObject {
     @Published var isRelocalizing: Bool = false
     @Published var isReadyToSave: Bool = false
     @Published var showRecalibrationPrompt: Bool = false
+    @Published var saveErrorMessage: String?
     @Published var savedAnchors: [AnchorRecord] = []
 
     /// Markers placed since the last Save; they aren't on disk until the world map is.
@@ -26,6 +27,12 @@ final class ARViewModel: NSObject, ObservableObject {
         super.init()
         if CommandLine.arguments.contains("--forceRecalibrationPrompt") {
             showRecalibrationPrompt = true
+        }
+        if CommandLine.arguments.contains("--forceSaveError") {
+            saveErrorMessage = "Simulated save failure."
+        }
+        if CommandLine.arguments.contains("--seedMarkers") {
+            savedAnchors = [AnchorRecord(id: UUID(), label: "Mark 1", timestamp: Date())]
         }
     }
     private var liveARAnchors: [UUID: ARAnchor] = [:]
@@ -45,12 +52,18 @@ final class ARViewModel: NSObject, ObservableObject {
         }
 
         if worldMap != nil,
-           let oldestDate = savedAnchors.map({ $0.timestamp }).min(),
-           Date().timeIntervalSince(oldestDate) > 30 * 24 * 60 * 60 {
+           Self.needsRecalibration(mapSavedAt: PersistenceManager.worldMapSavedAt()) {
             showRecalibrationPrompt = true
         }
 
         arView?.session.run(makeARConfiguration(worldMap: worldMap))
+    }
+
+    static let maxWorldMapAge: TimeInterval = 30 * 24 * 60 * 60
+
+    static func needsRecalibration(mapSavedAt: Date?, now: Date = Date()) -> Bool {
+        guard let mapSavedAt else { return false }
+        return now.timeIntervalSince(mapSavedAt) > maxWorldMapAge
     }
 
     static func records(_ records: [AnchorRecord], restorableFrom mapAnchorIDs: Set<UUID>) -> [AnchorRecord] {
@@ -201,7 +214,12 @@ final class ARViewModel: NSObject, ObservableObject {
     func saveWorldMap() {
         arView?.session.getCurrentWorldMap { [weak self] worldMap, error in
             guard let worldMap else {
-                print("ARViewModel: world map unavailable — \(error?.localizedDescription ?? "unknown")")
+                let message = "The environment couldn't be captured. " +
+                    "Move the phone slowly around the area and try again." +
+                    (error.map { "\n\n(\($0.localizedDescription))" } ?? "")
+                MainActor.assumeIsolated {
+                    self?.saveErrorMessage = message
+                }
                 return
             }
             // getCurrentWorldMap completion is called on the main thread
@@ -209,7 +227,7 @@ final class ARViewModel: NSObject, ObservableObject {
                 do {
                     try PersistenceManager.save(worldMap: worldMap)
                 } catch {
-                    print("ARViewModel: failed to save world map — \(error)")
+                    self?.saveErrorMessage = "The world map couldn't be written to storage.\n\n(\(error.localizedDescription))"
                     return
                 }
                 self?.commitUnsavedRecords(inMap: Self.anchorIDs(in: worldMap))

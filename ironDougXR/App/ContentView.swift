@@ -40,6 +40,17 @@ struct ContentView: View {
                 "Clear all markers, re-scan the environment, re-place markers, then Save."
             )
         }
+        .alert(
+            "Save Failed",
+            isPresented: Binding(
+                get: { viewModel.saveErrorMessage != nil },
+                set: { if !$0 { viewModel.saveErrorMessage = nil } }
+            )
+        ) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(viewModel.saveErrorMessage ?? "")
+        }
     }
 
     // MARK: - Sub-views

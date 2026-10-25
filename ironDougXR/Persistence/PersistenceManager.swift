@@ -25,6 +25,12 @@ enum PersistenceManager {
         try data.write(to: worldMapURL, options: .atomic)
     }
 
+    /// When the world map was last written; every Save refreshes it.
+    static func worldMapSavedAt() -> Date? {
+        let attributes = try? FileManager.default.attributesOfItem(atPath: worldMapURL.path)
+        return attributes?[.modificationDate] as? Date
+    }
+
     static func loadWorldMap() -> ARWorldMap? {
         guard let data = try? Data(contentsOf: worldMapURL) else { return nil }
         return try? NSKeyedUnarchiver.unarchivedObject(ofClass: ARWorldMap.self, from: data)
