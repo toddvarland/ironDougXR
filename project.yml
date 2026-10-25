@@ -10,7 +10,7 @@ options:
 settings:
   base:
     SWIFT_VERSION: 6.0
-    IPHONEOS_DEPLOYMENT_TARGET: 16.0
+    DEVELOPMENT_TEAM: 5Q2YW9392K
 
 targets:
   ironDougXR:
@@ -74,8 +74,10 @@ schemes:
     test:
       config: Debug
       targets:
+        # Serial: tests share the app's Documents files, and parallel
+        # simulator clones hang on this Xcode
         - name: ironDougXRTests
-          parallelizable: true
+          parallelizable: false
         - name: ironDougXRUITests
           parallelizable: false
     profile:

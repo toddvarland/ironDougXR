@@ -38,6 +38,11 @@ xcrun simctl list runtimes
 xcrun simctl list devices available
 ```
 
+### Parallel testing on simulator clones can hang
+With Xcode 27.1, `xcodebuild test` with `parallelizable: true` ran tests on "Clone N of …" simulators and never exited. The same tests pass in about a second when run serially. The unit tests also share the app's Documents files, so they shouldn't run in parallel anyway. `project.yml` now sets `parallelizable: false`; on the command line, add `-parallel-testing-enabled NO -test-timeouts-enabled YES` so a stuck test fails instead of hanging.
+
+A beta-build simulator runtime (e.g. iOS 27.1 `24A94425` vs SDK `24A94232`) also stalled at test launch. Prefer a released runtime. Killing `xcodebuild` mid-run can leave the simulator wedged; shut it down and boot it again before the next run.
+
 ---
 
 ## 2. xcodegen Scheme Configuration
@@ -147,6 +152,14 @@ override func setUp() {
 
 `ARWorldMap` is not `Codable`, so it cannot go in the same JSON file.
 
+### Keep the two files in agreement
+`anchors.json` must only list markers whose `ARAnchor` is inside the saved world map. Writing a record on every tap breaks this: if the user quits without saving, the record survives but its anchor never comes back, so the marker shows in the list but never in the scene.
+
+- New markers stay in memory until `getCurrentWorldMap` succeeds and the map is on disk
+- On save, commit only the anchor IDs actually present in the captured map (a tap can land while the save is in flight)
+- On launch, drop any record whose ID isn't in the loaded map's anchors
+- Measure map age from the map file's modification date, not from marker timestamps — re-saving should reset the clock
+
 ### Always check `supportsSceneReconstruction` and `supportsFrameSemantics`
 LiDAR features will crash on non-LiDAR devices if enabled unconditionally:
 
@@ -198,6 +211,9 @@ UI tests can verify existence of controls, sheet navigation, and alert flows bec
 ---
 
 ## 8. Build Tooling
+
+### Anything set in the Xcode UI is lost on regenerate
+`DEVELOPMENT_TEAM` had been set in Xcode's Signing pane, so `xcodegen generate` silently dropped it and device builds failed to sign. Put every build setting you rely on in `project.yml`.
 
 ### Use `xcodegen generate` after every `project.yml` change
 The `.xcodeproj` is generated, not hand-edited. Changes to `project.yml` won't take effect until you regenerate:
