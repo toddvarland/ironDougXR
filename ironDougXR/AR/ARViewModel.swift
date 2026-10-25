@@ -12,9 +12,14 @@ final class ARViewModel: NSObject, ObservableObject {
     @Published var isRelocalizing: Bool = false
     @Published var isReadyToSave: Bool = false
     @Published var showRecalibrationPrompt: Bool = false
-    @Published var anchorCount: Int = 0
+    @Published var saveErrorMessage: String?
+    @Published var savedAnchors: [AnchorRecord] = []
 
-    var savedAnchors: [AnchorRecord] = []
+    /// Markers placed since the last Save; they aren't on disk until the world map is.
+    @Published private(set) var unsavedIDs: Set<UUID> = []
+
+    var anchorCount: Int { savedAnchors.count }
+    var hasUnsavedChanges: Bool { !unsavedIDs.isEmpty }
 
     private var liveEntities: [UUID: AnchorEntity] = [:]
 
@@ -23,6 +28,12 @@ final class ARViewModel: NSObject, ObservableObject {
         if CommandLine.arguments.contains("--forceRecalibrationPrompt") {
             showRecalibrationPrompt = true
         }
+        if CommandLine.arguments.contains("--forceSaveError") {
+            saveErrorMessage = "Simulated save failure."
+        }
+        if CommandLine.arguments.contains("--seedMarkers") {
+            savedAnchors = [AnchorRecord(id: UUID(), label: "Mark 1", timestamp: Date())]
+        }
     }
     private var liveARAnchors: [UUID: ARAnchor] = [:]
     private var relocalizationTimer: Timer?
@@ -30,18 +41,37 @@ final class ARViewModel: NSObject, ObservableObject {
     // MARK: - Session
 
     func startSession() {
-        savedAnchors = PersistenceManager.loadAnchorRecords()
-        anchorCount = savedAnchors.count
-
         let worldMap = PersistenceManager.loadWorldMap()
 
+        // Drop records whose anchor isn't in the saved world map — they can never be restored
+        let loaded = PersistenceManager.loadAnchorRecords()
+        let mapAnchorIDs = worldMap.map(Self.anchorIDs(in:)) ?? []
+        savedAnchors = Self.records(loaded, restorableFrom: mapAnchorIDs)
+        if savedAnchors.count != loaded.count {
+            PersistenceManager.save(anchorRecords: savedAnchors)
+        }
+
         if worldMap != nil,
-           let oldestDate = savedAnchors.map({ $0.timestamp }).min(),
-           Date().timeIntervalSince(oldestDate) > 30 * 24 * 60 * 60 {
+           Self.needsRecalibration(mapSavedAt: PersistenceManager.worldMapSavedAt()) {
             showRecalibrationPrompt = true
         }
 
         arView?.session.run(makeARConfiguration(worldMap: worldMap))
+    }
+
+    static let maxWorldMapAge: TimeInterval = 30 * 24 * 60 * 60
+
+    static func needsRecalibration(mapSavedAt: Date?, now: Date = Date()) -> Bool {
+        guard let mapSavedAt else { return false }
+        return now.timeIntervalSince(mapSavedAt) > maxWorldMapAge
+    }
+
+    static func records(_ records: [AnchorRecord], restorableFrom mapAnchorIDs: Set<UUID>) -> [AnchorRecord] {
+        records.filter { mapAnchorIDs.contains($0.id) }
+    }
+
+    nonisolated static func anchorIDs(in worldMap: ARWorldMap) -> Set<UUID> {
+        Set(worldMap.anchors.compactMap { $0.name.flatMap(UUID.init(uuidString:)) })
     }
 
     private func makeARConfiguration(worldMap: ARWorldMap? = nil) -> ARWorldTrackingConfiguration {
@@ -83,14 +113,8 @@ final class ARViewModel: NSObject, ObservableObject {
         let anchorID = UUID()
         let arkitAnchor = ARAnchor(name: anchorID.uuidString, transform: hit.worldTransform)
 
-        // Save metadata first so label is resolvable in attachMarker
-        let record = AnchorRecord(
-            id: anchorID,
-            label: "Mark \(savedAnchors.count + 1)",
-            timestamp: Date()
-        )
-        savedAnchors.append(record)
-        PersistenceManager.save(anchorRecords: savedAnchors)
+        // Add metadata first so label is resolvable in attachMarker
+        addUnsavedRecord(id: anchorID)
 
         arView.session.add(anchor: arkitAnchor)
         liveARAnchors[anchorID] = arkitAnchor
@@ -101,6 +125,38 @@ final class ARViewModel: NSObject, ObservableObject {
 
     // MARK: - Marker Management
 
+    /// Counts up from the highest existing "Mark N", so numbers are never reused.
+    static func nextDefaultLabel(after records: [AnchorRecord]) -> String {
+        let highest = records
+            .compactMap { record -> Int? in
+                guard record.label.hasPrefix("Mark ") else { return nil }
+                return Int(record.label.dropFirst("Mark ".count))
+            }
+            .max() ?? 0
+        return "Mark \(highest + 1)"
+    }
+
+    /// Adds a record in memory only; it's written to disk with the next successful Save.
+    func addUnsavedRecord(id: UUID) {
+        savedAnchors.append(AnchorRecord(
+            id: id,
+            label: Self.nextDefaultLabel(after: savedAnchors),
+            timestamp: Date()
+        ))
+        unsavedIDs.insert(id)
+    }
+
+    /// Writes only records whose anchor is already in the saved world map.
+    private func persistSavedRecords() {
+        PersistenceManager.save(anchorRecords: savedAnchors.filter { !unsavedIDs.contains($0.id) })
+    }
+
+    /// Called once a world map is on disk; only anchors it actually contains become saved.
+    func commitUnsavedRecords(inMap mapAnchorIDs: Set<UUID>) {
+        unsavedIDs.subtract(mapAnchorIDs)
+        persistSavedRecords()
+    }
+
     func attachMarker(to anchor: ARAnchor, in arView: ARView, id: UUID) {
         let label = savedAnchors.first(where: { $0.id == id })?.label ?? "Mark"
         let anchorEntity = AnchorEntity(anchor: anchor)
@@ -108,7 +164,6 @@ final class ARViewModel: NSObject, ObservableObject {
         anchorEntity.addChild(markerEntity)
         arView.scene.addAnchor(anchorEntity)
         liveEntities[id] = anchorEntity
-        anchorCount = liveEntities.count
     }
 
     func deleteAnchor(id: UUID) {
@@ -116,10 +171,13 @@ final class ARViewModel: NSObject, ObservableObject {
             arView?.scene.removeAnchor(entity)
             liveEntities.removeValue(forKey: id)
         }
-        liveARAnchors.removeValue(forKey: id)
+        // Remove from the session too, so the next saved world map doesn't keep it
+        if let arkitAnchor = liveARAnchors.removeValue(forKey: id) {
+            arView?.session.remove(anchor: arkitAnchor)
+        }
         savedAnchors.removeAll { $0.id == id }
-        PersistenceManager.save(anchorRecords: savedAnchors)
-        anchorCount = liveEntities.count
+        unsavedIDs.remove(id)
+        persistSavedRecords()
     }
 
     func renameAnchor(id: UUID, label: String) {
@@ -129,7 +187,7 @@ final class ARViewModel: NSObject, ObservableObject {
             label: label,
             timestamp: savedAnchors[index].timestamp
         )
-        PersistenceManager.save(anchorRecords: savedAnchors)
+        persistSavedRecords()
 
         // Re-attach the entity to refresh the label text in the scene
         if let arView,
@@ -143,11 +201,12 @@ final class ARViewModel: NSObject, ObservableObject {
 
     func clearAllAnchors() {
         liveEntities.values.forEach { arView?.scene.removeAnchor($0) }
+        liveARAnchors.values.forEach { arView?.session.remove(anchor: $0) }
         liveEntities.removeAll()
         liveARAnchors.removeAll()
         savedAnchors.removeAll()
+        unsavedIDs.removeAll()
         PersistenceManager.clearAll()
-        anchorCount = 0
     }
 
     // MARK: - World Map Save
@@ -155,12 +214,23 @@ final class ARViewModel: NSObject, ObservableObject {
     func saveWorldMap() {
         arView?.session.getCurrentWorldMap { [weak self] worldMap, error in
             guard let worldMap else {
-                print("ARViewModel: world map unavailable — \(error?.localizedDescription ?? "unknown")")
+                let message = "The environment couldn't be captured. " +
+                    "Move the phone slowly around the area and try again." +
+                    (error.map { "\n\n(\($0.localizedDescription))" } ?? "")
+                MainActor.assumeIsolated {
+                    self?.saveErrorMessage = message
+                }
                 return
             }
             // getCurrentWorldMap completion is called on the main thread
             MainActor.assumeIsolated {
-                PersistenceManager.save(worldMap: worldMap)
+                do {
+                    try PersistenceManager.save(worldMap: worldMap)
+                } catch {
+                    self?.saveErrorMessage = "The world map couldn't be written to storage.\n\n(\(error.localizedDescription))"
+                    return
+                }
+                self?.commitUnsavedRecords(inMap: Self.anchorIDs(in: worldMap))
                 self?.trackingStatusMessage = "Saved ✓"
                 // Reset banner after 2 seconds
                 Task { @MainActor [weak self] in

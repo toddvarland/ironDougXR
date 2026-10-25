@@ -40,6 +40,17 @@ struct ContentView: View {
                 "Clear all markers, re-scan the environment, re-place markers, then Save."
             )
         }
+        .alert(
+            "Save Failed",
+            isPresented: Binding(
+                get: { viewModel.saveErrorMessage != nil },
+                set: { if !$0 { viewModel.saveErrorMessage = nil } }
+            )
+        ) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(viewModel.saveErrorMessage ?? "")
+        }
     }
 
     // MARK: - Sub-views
@@ -79,7 +90,17 @@ struct ContentView: View {
             }
             .buttonStyle(.borderedProminent)
             .disabled(!viewModel.isReadyToSave)
+            .overlay(alignment: .topTrailing) {
+                if viewModel.hasUnsavedChanges {
+                    Circle()
+                        .fill(.red)
+                        .frame(width: 10, height: 10)
+                        .offset(x: 3, y: -3)
+                        .accessibilityHidden(true)
+                }
+            }
             .accessibilityIdentifier("saveButton")
+            .accessibilityValue(viewModel.hasUnsavedChanges ? "Unsaved markers" : "")
 
             Button {
                 showMarkerList = true

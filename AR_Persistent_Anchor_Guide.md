@@ -5,9 +5,9 @@
 This guide covers building a native iOS AR app that lets the user look at a real-world environment through the iPhone camera, tap to drop a highly visible 3D marker anchored to a specific point in physical space, and have that marker reappear in exactly the same location the next time the app is launched.
 
 **Target device:** iPhone 14 Pro Max (has LiDAR Scanner — use it)  
-**Frameworks:** ARKit 6, RealityKit 2, SwiftUI / UIKit, CoreData or FileManager for persistence  
-**Language:** Swift 5.9+  
-**Xcode:** 15+, deployment target iOS 16+
+**Frameworks:** ARKit 6, RealityKit 2, SwiftUI, FileManager (JSON + archived `ARWorldMap`) for persistence  
+**Language:** Swift 6 (strict concurrency)  
+**Xcode:** 26+, deployment target iOS 18+ (project generated from `project.yml` with xcodegen)
 
 ---
 
@@ -94,8 +94,10 @@ import RealityKit
 func makeARConfiguration() -> ARWorldTrackingConfiguration {
     let config = ARWorldTrackingConfiguration()
 
-    // Use LiDAR for high-quality plane detection and raycasting
-    config.sceneReconstruction = .meshWithClassification
+    // Use LiDAR for high-quality plane detection and raycasting (checked, so non-LiDAR devices don't crash)
+    if ARWorldTrackingConfiguration.supportsSceneReconstruction(.meshWithClassification) {
+        config.sceneReconstruction = .meshWithClassification
+    }
 
     // Detect horizontal and vertical planes (floors, walls, tables)
     config.planeDetection = [.horizontal, .vertical]
@@ -103,8 +105,9 @@ func makeARConfiguration() -> ARWorldTrackingConfiguration {
     // Enable environment texturing for realistic lighting on the marker
     config.environmentTexturing = .automatic
 
-    // sceneDepth is guaranteed on iPhone 14 Pro Max (LiDAR always present — no capability check needed)
-    config.frameSemantics = .sceneDepth
+    if ARWorldTrackingConfiguration.supportsFrameSemantics(.sceneDepth) {
+        config.frameSemantics = .sceneDepth
+    }
 
     return config
 }
@@ -511,6 +514,8 @@ AnchorEntity (bound to ARAnchor)
 
 ## 9. Complete Implementation Walkthrough
 
+> **Note:** The listings below are the original design. The source files under `ironDougXR/` are authoritative and have since diverged — notably, new markers are written to `anchors.json` only on a successful Save, records with no anchor in the world map are dropped at launch, and the 30-day expiry is measured from the world map's save time.
+
 ### File Structure
 
 ```
@@ -897,7 +902,7 @@ When the app loads a saved world map, ARKit needs the user to scan the same envi
 
 ```swift
 // In ContentView body, overlaid on the ARView
-if viewModel.trackingStatusMessage.contains("saved area") {
+if viewModel.isRelocalizing {
     VStack {
         Image(systemName: "camera.viewfinder")
             .font(.system(size: 48))
@@ -913,18 +918,18 @@ if viewModel.trackingStatusMessage.contains("saved area") {
 ```
 
 ### Explicit Save
-The world map is saved **only** when the user taps "Save". Automatic background saves are intentionally avoided — an inadvertent scan (e.g., the phone pointing at the ceiling while being pocketed) could overwrite a good world map.
+The world map is saved **only** when the user taps "Save". Newly placed markers are kept in memory until then (a red dot on the button shows there are unsaved markers), so `anchors.json` never lists a marker the saved world map doesn't contain. If the save fails, a "Save Failed" alert explains why. Automatic background saves are intentionally avoided — an inadvertent scan (e.g., the phone pointing at the ceiling while being pocketed) could overwrite a good world map.
 
 Disable the button when tracking quality is not `.normal`:
 
 ```swift
 Button("Save") { arViewModel.saveWorldMap() }
     .buttonStyle(.borderedProminent)
-    .disabled(arViewModel.trackingStatusMessage != "Ready")
+    .disabled(!arViewModel.isReadyToSave)   // true only when tracking is .normal
 ```
 
 ### Recalibration Prompt
-When `showRecalibrationPrompt` is `true` (30-second relocalization timeout **or** world map older than 30 days), present an alert:
+When `showRecalibrationPrompt` is `true` (30-second relocalization timeout **or** world map last saved more than 30 days ago), present an alert:
 
 ```swift
 .alert("Environment Calibration Needed", isPresented: $arViewModel.showRecalibrationPrompt) {
@@ -1049,7 +1054,7 @@ All planning questions have been answered. The following decisions are reflected
 | 13 | Spatial measurement between markers? | **Not at this time.** |
 | 14 | Markers visible at any distance? | **Yes — no distance culling.** All markers rendered at full visibility regardless of distance. |
 | 15 | Marker categories / layers? | **Not at this time.** |
-| 16 | Support older devices without LiDAR? | **No — minimum iPhone 14 Pro Max.** LiDAR is always available; no `supportsSceneReconstruction` or `supportsFrameSemantics` checks needed. |
+| 16 | Support older devices without LiDAR? | **No — minimum iPhone 14 Pro Max.** The code still checks `supportsSceneReconstruction` and `supportsFrameSemantics` so it can't crash on a non-LiDAR device. |
 
 ---
 
@@ -1084,7 +1089,7 @@ Phase 6 — Testing (Days 15–20)
 **Goal:** AR session running on device, tapping a real surface places a primitive sphere.
 
 Tasks:
-1. Create Xcode project (SwiftUI, iOS 16, bundle ID `com.yourteam.irondougxr`)
+1. Create Xcode project (SwiftUI, iOS 18, bundle ID `com.irondougxr.app`) via `project.yml` + `xcodegen generate`
 2. Add `NSCameraUsageDescription` to `Info.plist`
 3. Implement `ARViewContainer` (`UIViewRepresentable`) with `ARWorldTrackingConfiguration`
 4. Enable `sceneReconstruction = .meshWithClassification`, `planeDetection = [.horizontal, .vertical]`, `frameSemantics = .sceneDepth`
@@ -1151,7 +1156,7 @@ Tasks:
 **Goal:** App handles all failure states gracefully; save button is guarded.
 
 Tasks:
-1. Disable "Save" button when `trackingStatusMessage != "Ready"`
+1. Disable "Save" button unless `isReadyToSave` (tracking is `.normal`)
 2. Show tracking status message as an overlay banner (top of screen)
 3. Show relocalization guidance overlay (camera icon + message) when `.relocalizing`
 4. Handle raycasting returning zero results gracefully (error haptic, no crash)
@@ -1440,7 +1445,7 @@ final class MarkerListUITests: XCTestCase {
 # Unit tests only (fast, Simulator OK)
 xcodebuild test \
   -scheme ironDougXR \
-  -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
+  -destination 'platform=iOS Simulator,name=<simulator matching the SDK>' \
   -only-testing:ironDougXRTests
 
 # UI tests (requires physical device)
@@ -1455,7 +1460,7 @@ xcodebuild test \
 ```bash
 xcodebuild test \
   -scheme ironDougXR \
-  -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
+  -destination 'platform=iOS Simulator,name=<simulator matching the SDK>' \
   -enableCodeCoverage YES \
   | xcpretty
 ```
@@ -1464,7 +1469,7 @@ xcodebuild test \
 
 #### Manual User-Directed Test Cases
 
-Execute these in order on a physical **iPhone 14 Pro Max** running iOS 16+. Each test case lists the preconditions, steps, and expected result. Mark Pass / Fail / Blocked.
+Execute these in order on a physical **iPhone 14 Pro Max** running iOS 18+. Each test case lists the preconditions, steps, and expected result. Mark Pass / Fail / Blocked.
 
 ---
 
