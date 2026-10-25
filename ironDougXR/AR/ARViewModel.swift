@@ -12,9 +12,9 @@ final class ARViewModel: NSObject, ObservableObject {
     @Published var isRelocalizing: Bool = false
     @Published var isReadyToSave: Bool = false
     @Published var showRecalibrationPrompt: Bool = false
-    @Published var anchorCount: Int = 0
+    @Published var savedAnchors: [AnchorRecord] = []
 
-    var savedAnchors: [AnchorRecord] = []
+    var anchorCount: Int { savedAnchors.count }
 
     private var liveEntities: [UUID: AnchorEntity] = [:]
 
@@ -31,7 +31,6 @@ final class ARViewModel: NSObject, ObservableObject {
 
     func startSession() {
         savedAnchors = PersistenceManager.loadAnchorRecords()
-        anchorCount = savedAnchors.count
 
         let worldMap = PersistenceManager.loadWorldMap()
 
@@ -86,7 +85,7 @@ final class ARViewModel: NSObject, ObservableObject {
         // Save metadata first so label is resolvable in attachMarker
         let record = AnchorRecord(
             id: anchorID,
-            label: "Mark \(savedAnchors.count + 1)",
+            label: Self.nextDefaultLabel(after: savedAnchors),
             timestamp: Date()
         )
         savedAnchors.append(record)
@@ -101,6 +100,17 @@ final class ARViewModel: NSObject, ObservableObject {
 
     // MARK: - Marker Management
 
+    /// Counts up from the highest existing "Mark N", so numbers are never reused.
+    static func nextDefaultLabel(after records: [AnchorRecord]) -> String {
+        let highest = records
+            .compactMap { record -> Int? in
+                guard record.label.hasPrefix("Mark ") else { return nil }
+                return Int(record.label.dropFirst("Mark ".count))
+            }
+            .max() ?? 0
+        return "Mark \(highest + 1)"
+    }
+
     func attachMarker(to anchor: ARAnchor, in arView: ARView, id: UUID) {
         let label = savedAnchors.first(where: { $0.id == id })?.label ?? "Mark"
         let anchorEntity = AnchorEntity(anchor: anchor)
@@ -108,7 +118,6 @@ final class ARViewModel: NSObject, ObservableObject {
         anchorEntity.addChild(markerEntity)
         arView.scene.addAnchor(anchorEntity)
         liveEntities[id] = anchorEntity
-        anchorCount = liveEntities.count
     }
 
     func deleteAnchor(id: UUID) {
@@ -116,10 +125,12 @@ final class ARViewModel: NSObject, ObservableObject {
             arView?.scene.removeAnchor(entity)
             liveEntities.removeValue(forKey: id)
         }
-        liveARAnchors.removeValue(forKey: id)
+        // Remove from the session too, so the next saved world map doesn't keep it
+        if let arkitAnchor = liveARAnchors.removeValue(forKey: id) {
+            arView?.session.remove(anchor: arkitAnchor)
+        }
         savedAnchors.removeAll { $0.id == id }
         PersistenceManager.save(anchorRecords: savedAnchors)
-        anchorCount = liveEntities.count
     }
 
     func renameAnchor(id: UUID, label: String) {
@@ -143,11 +154,11 @@ final class ARViewModel: NSObject, ObservableObject {
 
     func clearAllAnchors() {
         liveEntities.values.forEach { arView?.scene.removeAnchor($0) }
+        liveARAnchors.values.forEach { arView?.session.remove(anchor: $0) }
         liveEntities.removeAll()
         liveARAnchors.removeAll()
         savedAnchors.removeAll()
         PersistenceManager.clearAll()
-        anchorCount = 0
     }
 
     // MARK: - World Map Save

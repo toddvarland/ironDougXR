@@ -1,4 +1,5 @@
 import XCTest
+import Combine
 @testable import ironDougXR
 
 @MainActor
@@ -107,8 +108,57 @@ final class ARViewModelLogicTests: XCTestCase {
         let vm = ARViewModel()
         // arView is nil so session.run won't be called — just test record loading
         vm.savedAnchors = PersistenceManager.loadAnchorRecords()
-        vm.anchorCount = vm.savedAnchors.count
         XCTAssertEqual(vm.savedAnchors.count, 2)
         XCTAssertEqual(vm.anchorCount, 2)
+    }
+
+    // MARK: - Default labels
+
+    func test_nextDefaultLabel_startsAtOne() {
+        XCTAssertEqual(ARViewModel.nextDefaultLabel(after: []), "Mark 1")
+    }
+
+    func test_nextDefaultLabel_countsUpPastGaps() {
+        let records = [
+            AnchorRecord(id: UUID(), label: "Mark 1", timestamp: Date()),
+            AnchorRecord(id: UUID(), label: "Mark 3", timestamp: Date())
+        ]
+        XCTAssertEqual(ARViewModel.nextDefaultLabel(after: records), "Mark 4")
+    }
+
+    func test_nextDefaultLabel_ignoresRenamedMarkers() {
+        let records = [
+            AnchorRecord(id: UUID(), label: "Mark 2", timestamp: Date()),
+            AnchorRecord(id: UUID(), label: "Front Door", timestamp: Date()),
+            AnchorRecord(id: UUID(), label: "Mark ten", timestamp: Date())
+        ]
+        XCTAssertEqual(ARViewModel.nextDefaultLabel(after: records), "Mark 3")
+    }
+
+    // MARK: - Count stays in sync with the list
+
+    func test_anchorCount_tracksSavedAnchors() {
+        let vm = ARViewModel()
+        let id = UUID()
+        vm.savedAnchors = [
+            AnchorRecord(id: id, label: "Mark 1", timestamp: Date()),
+            AnchorRecord(id: UUID(), label: "Mark 2", timestamp: Date())
+        ]
+        XCTAssertEqual(vm.anchorCount, 2)
+        vm.deleteAnchor(id: id)
+        XCTAssertEqual(vm.anchorCount, 1)
+        vm.clearAllAnchors()
+        XCTAssertEqual(vm.anchorCount, 0)
+    }
+
+    func test_renameAnchor_publishesChange() {
+        let vm = ARViewModel()
+        let id = UUID()
+        vm.savedAnchors = [AnchorRecord(id: id, label: "Old", timestamp: Date())]
+        var changes = 0
+        let sub = vm.objectWillChange.sink { changes += 1 }
+        vm.renameAnchor(id: id, label: "New")
+        sub.cancel()
+        XCTAssertGreaterThan(changes, 0, "List must redraw on rename even with no live entity")
     }
 }
