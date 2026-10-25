@@ -16,6 +16,7 @@
 		86B48B0DEED5151BF5AA2103 /* PersistenceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B777EC6C0820C09FBB595140 /* PersistenceManager.swift */; };
 		8733906D5FFE8DA30C4D00A3 /* ironDougXRApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAB4A445B7944116B6FD9ED1 /* ironDougXRApp.swift */; };
 		9CC16ACDA16E973752693123 /* MarkerEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C3E5F9513BDD0182EB22C7A /* MarkerEntity.swift */; };
+		AC1FCC968CBCFB84DE670A92 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0D1BF992BCAEE6DBF4237014 /* Assets.xcassets */; };
 		BDC0DB798232476741034FCE /* AnchorRecordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F63E0D02298D19FFDBA88C5 /* AnchorRecordTests.swift */; };
 		C846C20435D19DC8D12BA9CB /* MarkerListUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F64A86A4DB6138DDC18CC998 /* MarkerListUITests.swift */; };
 		E31B537135C62D3E1FA914B2 /* PersistenceManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4999CFED1A9059DB57BCBC54 /* PersistenceManagerTests.swift */; };
@@ -43,6 +44,7 @@
 /* Begin PBXFileReference section */
 		099D92B4B2D2EDCD4A8C2195 /* ironDougXR.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = ironDougXR.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C3E5F9513BDD0182EB22C7A /* MarkerEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkerEntity.swift; sourceTree = "<group>"; };
+		0D1BF992BCAEE6DBF4237014 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		14ABDDE5AD6196EEF3551899 /* RealityKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RealityKit.framework; path = System/Library/Frameworks/RealityKit.framework; sourceTree = SDKROOT; };
 		219ED27BA53CA7BBBFA1032D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		410671AB8C72B72AE9637C12 /* ARViewContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARViewContainer.swift; sourceTree = "<group>"; };
@@ -96,6 +98,7 @@
 		3E94E4F83488E5137F322ACE /* ironDougXR */ = {
 			isa = PBXGroup;
 			children = (
+				0D1BF992BCAEE6DBF4237014 /* Assets.xcassets */,
 				219ED27BA53CA7BBBFA1032D /* Info.plist */,
 				2FCDC891F9E6AE2EF052599C /* App */,
 				D0BFBCEDD7FB8562405D0F2C /* AR */,
@@ -170,6 +173,7 @@
 			buildConfigurationList = 2037EB855BF97580B217F8C3 /* Build configuration list for PBXNativeTarget "ironDougXR" */;
 			buildPhases = (
 				4A99FBBF6D884301DF332006 /* Sources */,
+				8C4DBC97D4F91E7D5332373F /* Resources */,
 				83905C004BC2A8A08377CF36 /* Frameworks */,
 			);
 			buildRules = (
@@ -260,6 +264,17 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8C4DBC97D4F91E7D5332373F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AC1FCC968CBCFB84DE670A92 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		46FBAECB3596C00482F7E7D7 /* Sources */ = {

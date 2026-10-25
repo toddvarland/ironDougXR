@@ -33,6 +33,8 @@ targets:
         TARGETED_DEVICE_FAMILY: "1"
         IPHONEOS_DEPLOYMENT_TARGET: 18.0
         SWIFT_STRICT_CONCURRENCY: complete
+        # Icon source: tools/make_icon.swift (swift tools/make_icon.swift <out.png>)
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
     dependencies:
       - sdk: ARKit.framework
       - sdk: RealityKit.framework
